@@ -2,6 +2,22 @@ import streamlit as st
 from decimal import Decimal, getcontext
 
 getcontext().prec = 50
+import math
+
+def first_digit_expected_probabilities():
+    probabilities = {}
+    for d in range(1, 10):
+        probabilities[d] = math.log10(1 + 1 / d)
+    return probabilities
+
+def second_digit_expected_probabilities():
+    probabilities = {}
+    for d in range(0, 10):
+        total = 0
+        for k in range(1, 10):
+            total += math.log10(1 + 1 / (10 * k + d))
+        probabilities[d] = total
+    return probabilities
 
 def extract_significant_digits(number):
     number = abs(number)
