@@ -27,6 +27,36 @@ def chi_square_statistic(observed_counts, expected_probabilities, total_count):
         chi_square += ((observed - expected) ** 2) / expected
     return chi_square
 
+def mean_absolute_deviation(observed_counts, expected_probabilities, total_count):
+    k = len(expected_probabilities)
+    total_deviation = 0
+    for digit in expected_probabilities:
+        observed_proportion = observed_counts.get(digit, 0) / total_count
+        expected_proportion = expected_probabilities[digit]
+        total_deviation += abs(observed_proportion - expected_proportion)
+    mad = total_deviation / k
+    return mad
+
+def mad_conformity_first_digit(mad):
+    if mad <= 0.006:
+        return "Close conformity"
+    elif mad <= 0.012:
+        return "Acceptable conformity"
+    elif mad <= 0.015:
+        return "Marginal conformity"
+    else:
+        return "Nonconformity"
+
+def mad_conformity_second_digit(mad):
+    if mad <= 0.008:
+        return "Close conformity"
+    elif mad <= 0.010:
+        return "Acceptable conformity"
+    elif mad <= 0.012:
+        return "Marginal conformity"
+    else:
+        return "Nonconformity"
+
 def extract_significant_digits(number):
     number = abs(number)
     if number == 0:
