@@ -1,8 +1,8 @@
 import streamlit as st
 from decimal import Decimal, getcontext
+import math
 
 getcontext().prec = 50
-import math
 
 def first_digit_expected_probabilities():
     probabilities = {}
@@ -18,6 +18,14 @@ def second_digit_expected_probabilities():
             total += math.log10(1 + 1 / (10 * k + d))
         probabilities[d] = total
     return probabilities
+
+def chi_square_statistic(observed_counts, expected_probabilities, total_count):
+    chi_square = 0
+    for digit in expected_probabilities:
+        observed = observed_counts.get(digit, 0)
+        expected = expected_probabilities[digit] * total_count
+        chi_square += ((observed - expected) ** 2) / expected
+    return chi_square
 
 def extract_significant_digits(number):
     number = abs(number)
