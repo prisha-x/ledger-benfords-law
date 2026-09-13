@@ -1,6 +1,7 @@
 import streamlit as st
 from decimal import Decimal, getcontext
 import math
+import random
 
 getcontext().prec = 50
 
@@ -93,6 +94,33 @@ def flag_anomalous_rows(data_with_leading_digits, observed_counts, expected_prob
             flagged_rows.append({"row": row_index, "leading_digit": leading_digit, "status": direction})
 
     return flagged_rows
+
+def generate_expense_ledger_demo(seed=42, n=400, fraud_fraction=0.35):
+    rng = random.Random(seed)
+    rows = []
+    fraud_count = round(n * fraud_fraction)
+    genuine_count = n - fraud_count
+
+    for _ in range(genuine_count):
+        magnitude = rng.uniform(1, 4)
+        amount = round(10 ** magnitude, 2)
+        rows.append(amount)
+
+    for _ in range(fraud_count):
+        amount = round(rng.uniform(400, 499.99), 2)
+        rows.append(amount)
+
+    rng.shuffle(rows)
+    return rows
+
+def generate_clean_baseline_demo(seed=7, n=1000):
+    rng = random.Random(seed)
+    rows = []
+    for _ in range(n):
+        magnitude = rng.uniform(1, 6)
+        amount = round(10 ** magnitude, 2)
+        rows.append(amount)
+    return rows
 
 def extract_significant_digits(number):
     number = abs(number)
