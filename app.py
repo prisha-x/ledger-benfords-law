@@ -76,6 +76,24 @@ def calculate_suspicion_score(mad, chi_square, total_count):
 
     return round(min(final_score, 100))
 
+def flag_anomalous_rows(data_with_leading_digits, observed_counts, expected_probabilities, total_count):
+    deviations = {}
+    for digit in expected_probabilities:
+        observed_proportion = observed_counts.get(digit, 0) / total_count
+        expected_proportion = expected_probabilities[digit]
+        deviations[digit] = observed_proportion - expected_proportion
+
+    sorted_digits = sorted(deviations.items(), key=lambda item: abs(item[1]), reverse=True)
+    top_two_digits = [digit for digit, deviation in sorted_digits[:2]]
+
+    flagged_rows = []
+    for row_index, leading_digit in data_with_leading_digits:
+        if leading_digit in top_two_digits:
+            direction = "over-represented" if deviations[leading_digit] > 0 else "under-represented"
+            flagged_rows.append({"row": row_index, "leading_digit": leading_digit, "status": direction})
+
+    return flagged_rows
+
 def extract_significant_digits(number):
     number = abs(number)
     if number == 0:
