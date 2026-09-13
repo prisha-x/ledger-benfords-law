@@ -57,6 +57,25 @@ def mad_conformity_second_digit(mad):
     else:
         return "Nonconformity"
 
+def calculate_suspicion_score(mad, chi_square, total_count):
+    if mad <= 0.006:
+        mad_tier = 0
+    elif mad <= 0.012:
+        mad_tier = 1
+    elif mad <= 0.015:
+        mad_tier = 2
+    else:
+        mad_tier = 3
+
+    mad_component = (mad_tier / 3) * 55
+    chi_component = min(chi_square / 40, 1) * 45
+    raw_score = mad_component + chi_component
+
+    reliability = min(total_count / 300, 1)
+    final_score = raw_score * reliability
+
+    return round(min(final_score, 100))
+
 def extract_significant_digits(number):
     number = abs(number)
     if number == 0:
