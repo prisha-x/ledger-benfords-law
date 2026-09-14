@@ -134,3 +134,22 @@ def extract_significant_digits(number):
     leading_digit = int(digit_string[0])
     second_digit = int(digit_string[1]) if len(digit_string) > 1 else None
     return leading_digit, second_digit
+
+st.set_page_config(page_title="Ledger — Is this data suspicious?", layout="wide")
+st.title("Ledger")
+st.caption("A Benford's Law anomaly screening tool")
+
+st.subheader("01 — Choose a case file")
+
+demo_choice = st.radio(
+    "Select a dataset to analyze:",
+    ["Expense Ledger (suspicious)", "Clean Baseline", "Upload my own CSV"]
+)
+
+if demo_choice == "Expense Ledger (suspicious)":
+    data = generate_expense_ledger_demo()
+elif demo_choice == "Clean Baseline":
+    data = generate_clean_baseline_demo()
+else:
+    data = None
+    st.info("CSV upload coming soon.")
