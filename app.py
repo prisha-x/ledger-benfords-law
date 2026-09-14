@@ -153,3 +153,29 @@ elif demo_choice == "Clean Baseline":
 else:
     data = None
     st.info("CSV upload coming soon.")
+
+if data is not None:
+    st.subheader("02 — Analysis Results")
+
+    observed_counts = {}
+    for amount in data:
+        result = extract_significant_digits(amount)
+        if result is not None:
+            leading_digit = result[0]
+            observed_counts[leading_digit] = observed_counts.get(leading_digit, 0) + 1
+
+    total_count = len(data)
+    expected = first_digit_expected_probabilities()
+
+    chi = chi_square_statistic(observed_counts, expected, total_count)
+    mad = mean_absolute_deviation(observed_counts, expected, total_count)
+    score = calculate_suspicion_score(mad, chi, total_count)
+    conformity = mad_conformity_first_digit(mad)
+
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Suspicion Score", f"{score}/100")
+    col2.metric("Chi-Square (df=8)", f"{chi:.2f}")
+    col3.metric("MAD Score", f"{mad:.4f}")
+    col4.metric("Conformity", conformity)
+
+    st.caption(f"Total rows analyzed: {total_count}")
