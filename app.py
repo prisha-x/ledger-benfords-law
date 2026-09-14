@@ -2,6 +2,7 @@ import streamlit as st
 from decimal import Decimal, getcontext
 import math
 import random
+import matplotlib.pyplot as plt
 
 getcontext().prec = 50
 
@@ -14,10 +15,10 @@ def first_digit_expected_probabilities():
 def second_digit_expected_probabilities():
     probabilities = {}
     for d in range(0, 10):
-        total = 0
+        digit_total = 0
         for k in range(1, 10):
-            total += math.log10(1 + 1 / (10 * k + d))
-        probabilities[d] = total
+            digit_total += math.log10(1 + 1 / (10 * k + d))
+        probabilities[d] = digit_total
     return probabilities
 
 def chi_square_statistic(observed_counts, expected_probabilities, total_count):
@@ -179,3 +180,19 @@ if data is not None:
     col4.metric("Conformity", conformity)
 
     st.caption(f"Total rows analyzed: {total_count}")
+
+    st.subheader("First-Digit Distribution")
+
+    digits = list(range(1, 10))
+    observed_percentages = [observed_counts.get(d, 0) / total_count * 100 for d in digits]
+    expected_percentages = [expected[d] * 100 for d in digits]
+
+    fig, ax = plt.subplots()
+    ax.bar(digits, observed_percentages, label="Observed", alpha=0.7)
+    ax.plot(digits, expected_percentages, color="red", marker="o", label="Expected (Benford)")
+    ax.set_xlabel("Leading Digit")
+    ax.set_ylabel("Percentage (%)")
+    ax.set_xticks(digits)
+    ax.legend()
+
+    st.pyplot(fig)
