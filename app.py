@@ -179,6 +179,32 @@ if data is not None:
     col3.metric("MAD Score", f"{mad:.4f}")
     col4.metric("Conformity", conformity)
 
+    if score < 30:
+        gauge_color = "#1F5C57"
+    elif score < 60:
+        gauge_color = "#D98E3B"
+    else:
+        gauge_color = "#B23B3B"
+
+    fig_gauge, ax_gauge = plt.subplots(figsize=(4, 2.2), subplot_kw={"projection": "polar"})
+    ax_gauge.set_theta_zero_location("W")
+    ax_gauge.set_theta_direction(-1)
+    ax_gauge.set_thetamin(0)
+    ax_gauge.set_thetamax(180)
+
+    ax_gauge.barh(0, 180, left=0, height=1, color="#DCD3B8", edgecolor="none")
+    ax_gauge.barh(0, max((score / 100) * 180, 1), left=0, height=0.9, color=gauge_color, edgecolor="none")
+
+    ax_gauge.set_yticklabels([])
+    ax_gauge.set_xticklabels([])
+    ax_gauge.grid(False)
+    ax_gauge.spines['polar'].set_visible(False)
+    ax_gauge.set_title(f"Suspicion: {score}/100", fontsize=14, pad=20)
+
+    col_gauge, col_spacer = st.columns([1, 2])
+    with col_gauge:
+        st.pyplot(fig_gauge)
+
     st.caption(f"Total rows analyzed: {total_count}")
 
     if total_count < 300:
