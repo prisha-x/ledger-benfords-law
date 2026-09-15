@@ -262,4 +262,11 @@ if data is not None:
         for entry in flagged[:20]:
             row_num = entry["row"]
             amount_value = data[row_num]
-            st.write(f"Row {row_num}: ${amount_value:.2f} — leading digit {entry['leading_digit']} ({entry['status']})")
+            if entry["status"] == "over-represented":
+                color = "#D98E3B"
+            else:
+                color = "#1F5C57"
+            st.markdown(
+                f"<span style='color:{color}'>Row {row_num}: ${amount_value:.2f} — leading digit {entry['leading_digit']} ({entry['status']})</span>",
+                unsafe_allow_html=True
+            )
