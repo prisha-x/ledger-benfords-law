@@ -6,6 +6,25 @@ import matplotlib.pyplot as plt
 
 getcontext().prec = 50
 
+CUSTOM_CSS = """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+.stApp {
+    background-color: #12141A;
+    color: #EDE8DA;
+}
+
+h1, h2, h3 {
+    font-family: 'Fraunces', serif !important;
+}
+
+[data-testid="stMetricValue"] {
+    font-family: 'IBM Plex Mono', monospace !important;
+}
+</style>
+"""
+
 def first_digit_expected_probabilities():
     probabilities = {}
     for d in range(1, 10):
@@ -137,6 +156,7 @@ def extract_significant_digits(number):
     return leading_digit, second_digit
 
 st.set_page_config(page_title="Ledger — Is this data suspicious?", layout="wide")
+st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 st.title("Ledger")
 st.caption("A Benford's Law anomaly screening tool")
 
