@@ -181,6 +181,9 @@ if data is not None:
 
     st.caption(f"Total rows analyzed: {total_count}")
 
+    if total_count < 300:
+        st.warning("⚠ Small sample (n < 300) — deviations at this size can occur by chance. Treat the suspicion score above as low-confidence.")
+
     st.subheader("First-Digit Distribution")
 
     digits = list(range(1, 10))
