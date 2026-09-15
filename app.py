@@ -196,3 +196,21 @@ if data is not None:
     ax.legend()
 
     st.pyplot(fig)
+
+    st.subheader("Evidence Log — Rows Driving the Anomaly")
+
+    data_with_leading_digits = []
+    for row_index, amount in enumerate(data):
+        result = extract_significant_digits(amount)
+        if result is not None:
+            data_with_leading_digits.append((row_index, result[0]))
+
+    flagged = flag_anomalous_rows(data_with_leading_digits, observed_counts, expected, total_count)
+
+    if len(flagged) == 0:
+        st.write("No rows flagged — digit distribution stays within expected bounds.")
+    else:
+        for entry in flagged[:20]:
+            row_num = entry["row"]
+            amount_value = data[row_num]
+            st.write(f"Row {row_num}: ${amount_value:.2f} — leading digit {entry['leading_digit']} ({entry['status']})")
