@@ -183,6 +183,10 @@ else:
         else:
             selected_column = st.selectbox("Select the numeric column to analyze:", numeric_columns)
             data = df[selected_column].dropna().tolist()
+            if len(data) < 5:
+                st.error("This column has fewer than 5 valid numeric values — not enough data to analyze.")
+                data = None
+
 
 if data is not None:
     st.subheader("02 — Analysis Results")
