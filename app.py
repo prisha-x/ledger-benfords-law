@@ -3,6 +3,7 @@ from decimal import Decimal, getcontext
 import math
 import random
 import matplotlib.pyplot as plt
+import pandas as pd
 
 getcontext().prec = 50
 
@@ -172,8 +173,16 @@ if demo_choice == "Expense Ledger (suspicious)":
 elif demo_choice == "Clean Baseline":
     data = generate_clean_baseline_demo()
 else:
+    uploaded_file = st.file_uploader("Upload a CSV file", type="csv")
     data = None
-    st.info("CSV upload coming soon.")
+    if uploaded_file is not None:
+        df = pd.read_csv(uploaded_file)
+        numeric_columns = df.select_dtypes(include="number").columns.tolist()
+        if len(numeric_columns) == 0:
+            st.error("No numeric columns found in this file.")
+        else:
+            selected_column = st.selectbox("Select the numeric column to analyze:", numeric_columns)
+            data = df[selected_column].dropna().tolist()
 
 if data is not None:
     st.subheader("02 — Analysis Results")
