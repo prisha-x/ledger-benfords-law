@@ -249,7 +249,7 @@ if data is not None:
     observed_percentages = [observed_counts.get(d, 0) / total_count * 100 for d in digits]
     expected_percentages = [expected[d] * 100 for d in digits]
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(6, 3.5))
     ax.bar(digits, observed_percentages, label="Observed", alpha=0.7)
     ax.plot(digits, expected_percentages, color="red", marker="o", label="Expected (Benford)")
     ax.set_xlabel("Leading Digit")
@@ -258,6 +258,45 @@ if data is not None:
     ax.legend()
 
     st.pyplot(fig)
+
+    st.subheader("Second-Digit Distribution")
+
+    observed_second_counts = {}
+    for amount in data:
+        result = extract_significant_digits(amount)
+        if result is not None and result[1] is not None:
+            second_digit = result[1]
+            observed_second_counts[second_digit] = observed_second_counts.get(second_digit, 0) + 1
+
+    second_total_count = sum(observed_second_counts.values())
+
+    if second_total_count == 0:
+        st.write("No numbers with a valid second digit found in this dataset.")
+    else:
+        expected_second = second_digit_expected_probabilities()
+
+        chi_second = chi_square_statistic(observed_second_counts, expected_second, second_total_count)
+        mad_second = mean_absolute_deviation(observed_second_counts, expected_second, second_total_count)
+        conformity_second = mad_conformity_second_digit(mad_second)
+
+        col1s, col2s, col3s = st.columns(3)
+        col1s.metric("2nd-Digit χ² (df=9)", f"{chi_second:.2f}")
+        col2s.metric("2nd-Digit MAD", f"{mad_second:.4f}")
+        col3s.metric("2nd-Digit Conformity", conformity_second)
+
+        second_digits_range = list(range(0, 10))
+        observed_second_percentages = [observed_second_counts.get(d, 0) / second_total_count * 100 for d in second_digits_range]
+        expected_second_percentages = [expected_second[d] * 100 for d in second_digits_range]
+
+        fig2, ax2 = plt.subplots(figsize=(6, 3.5))
+        ax2.bar(second_digits_range, observed_second_percentages, label="Observed", alpha=0.7, color="#D98E3B")
+        ax2.plot(second_digits_range, expected_second_percentages, color="red", marker="o", label="Expected (Benford)")
+        ax2.set_xlabel("Second Digit")
+        ax2.set_ylabel("Percentage (%)")
+        ax2.set_xticks(second_digits_range)
+        ax2.legend()
+
+        st.pyplot(fig2)
 
     st.subheader("Evidence Log — Rows Driving the Anomaly")
 
