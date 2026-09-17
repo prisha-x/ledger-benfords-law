@@ -161,6 +161,11 @@ st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 st.title("Ledger")
 st.caption("A Benford's Law anomaly screening tool")
 
+with st.expander("How to read this"):
+    st.write("Digit patterns can reveal unusual or unexpected behavior in financial data, which is why forensic accountants and auditors use Benford's Law as one screening technique when investigating potential irregularities.")
+    st.write("This tool tests both the first and second digits of your data against their expected Benford distributions, using MAD to measure the size of the deviation and chi-square to test whether it's statistically significant. The suspicion score is my own composite formula, not a published or standardized Benford metric.")
+    st.write("This is a screening tool, not proof of fraud — an unusual Benford pattern can have legitimate explanations. Results are more meaningful with larger datasets (several hundred rows or more).")
+
 st.subheader("01 — Choose a case file")
 
 demo_choice = st.radio(
